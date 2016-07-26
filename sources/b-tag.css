@@ -1,0 +1,7 @@
+input-radio-group .form-group.has-error label {
+	color: #a94442;
+}
+
+input-radio-group .form-group.has-warning label {
+	color: #8a6d3b;
+}	

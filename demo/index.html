@@ -1,0 +1,208 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>The HTML5 Herald</title>
+  <script type="text/javascript" src="./../node_modules/webcomponents.js/webcomponents-lite.js"></script>
+  <link rel="stylesheet" type="text/css" href="./../node_modules/bootstrap/dist/css/bootstrap.css">
+  <style type="text/css">
+	[initial-cloak] {
+		display: none;
+	}
+
+	.loader-text {
+		color: red;
+	}
+
+	.centered {
+	  display: table-cell; 
+	  vertical-align: middle; 
+	  text-align: center; 
+	}
+
+	.backgroud-cover {
+	    position:fixed;
+	    padding:0;
+	    margin:0;
+
+	    top:0;
+	    left:0;
+
+	    width: 100%;
+	    height: 100%;
+	    background:rgba(255,255,255,0.5);
+
+	    z-index: 4000;
+	    line-height: 400px;
+	}	
+  </style>
+</head>
+
+<body class="container">
+
+	<h1>Confirmation Modal</h1>
+  
+  	<button type="button" onclick="openConfirmationModal()" class="btn btn-default btn-lg">Open Modal</button>
+
+	<hr />
+
+	<h1>Form Example</h1>
+
+	<form-ajax initial-cloak ajaxService="dummyAjaxService" post-url="/post/url" loader="form-loader">
+
+		<input-radio-group field="radioField" label="Scegli il caso" required required-message="This field is mandatory">
+			<input-radio checked field="radioButton" value="Primo" label="Caso 1"></input-radio>
+			<input-radio readonly field="radioButton" value="Secondo" label="Caso 2"></input-radio>
+			<input-radio field="radioButton" value="Terzo" label="Caso 3"></input-radio>
+		</input-radio-group>
+
+		<input-checkbox label="Checkbox" field="checkField"></input-checkbox>	
+
+		<input-text label="Text Field"
+					field="textField" 
+					placeholder="Type Something" 
+					required required-message="This field is mandatory"
+					regex="[0-9]" regex-message="This field must contain a number"
+					max-length="4" max-length-message="This field must be at most 4 chars">
+		</input-text>
+
+		<input-select label="Select Field"
+					field="selectField" initial-cloak
+					placeholder="Select Something" 
+					required required-message="This field is mandatory"
+					get-url="/select/options" ajaxService="dummyAjaxService">
+			<option value="" disabled selected>Select your option</option>
+			<option value="1">First Choice</option>
+			<option value="2">Second Choice</option>
+			<option value="3">Third Choice</option>
+			<option value="4">Fourth Choice</option>
+			<option value="5">Fifth Choice</option>
+		</input-select>		
+
+		<input-textarea rows="4"
+					label="Text Field"
+					field="textareaField" 
+					placeholder="Type Something" 
+					required required-message="This field is mandatory"
+					regex="[0-9]" regex-message="This field must contain a number"
+					max-length="4" max-length-message="This field must be at most 4 chars">
+		</input-textarea>
+
+		<input type="submit" value="Submit" class="btn btn-default"/>
+	</form-ajax>
+
+	<hr />
+
+	<h1>Collection Example (With Show More and Automatic Refresh)</h1>
+
+	<collection-container 	initial-cloak ajaxService="dummyAjaxService" 
+							get-url="/get/url" 
+							elements-per-page="8"
+							show-more-strategy
+							automatic-first-fetch="100"
+							automatic-refresh="30000">
+
+		<collection-search-form ajaxService="dummyAjaxService" post-url="/post/url">
+
+			<input-text label="Search Text"
+						field="searchText" 
+						placeholder="Search">
+			</input-text>
+
+			<input type="submit" value="Search" class="btn btn-default"/>
+		</collection-search-form>
+	
+		<br />
+
+		<p class="alert alert-success">You are watching <number-of-results class="label label-success"></number-of-results> / <feedback-token class="label label-success" key="totalNumberOfResults" default="0"></feedback-token> results.</p>
+
+		<collection-elements loader="collection-loader">
+			<linux-distribution></linux-distribution>
+		</collection-elements>
+
+		<br />
+
+		<button show-more-button class="btn btn-default">Show More</button>
+	</collection-container>	
+
+	<hr />
+
+	<h1>Collection Example (With Infinite Scrolling)</h1>
+
+	<collection-container 	initial-cloak ajaxService="dummyAjaxService" 
+							get-url="/get/url" 
+							elements-per-page="8"
+							infinite-scrolling-strategy 
+							automatic-first-fetch="100">
+
+		<collection-search-form ajaxService="dummyAjaxService" post-url="/post/url">
+
+			<input-text label="Search Text"
+						field="searchText" 
+						placeholder="Search">
+			</input-text>
+
+			<input type="submit" value="Search" class="btn btn-default"/>
+		</collection-search-form>
+	
+		<br />
+
+		<collection-elements loader="collection-loader" template="linux-distribution"></collection-elements>
+
+	</collection-container>	
+
+	<script type="text/javascript" src="./dummy-ajax-service.js"></script>
+	<script type="text/javascript" src="./../node_modules/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="./../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+	<script type="text/javascript" src="./../node_modules/underscore/underscore.js"></script>
+	<script type="text/javascript" src="./../dist/b-tag.js"></script>
+	
+	<script type="text/javascript">
+		var form = document.querySelector("form-ajax");
+
+		b.tag.events.attachListener(form, "before-submit", function (e) {
+			alert("Submitted data: " + JSON.stringify(e.content));
+		});
+
+		b.tag.events.attachListener(form, "on-server-validation-success", function (e) {
+			alert("The submit is successfull!");
+		});
+
+		b.tag.createTag("form-loader").from({
+			createdCallback: function () {
+				this.innerHTML = "<div class='loader-text centered backgroud-cover'><span>Loading...</span></div>"
+			}
+		});
+
+		b.tag.createTag("collection-loader").from({
+			createdCallback: function () {
+				this.innerHTML = "<div class='alert alert-danger' role='alert'><h3>Loading...</h3></div>";
+			}
+		});
+
+		b.tag.createTag("linux-distribution").from({
+			renderFrom: function (item) {
+				this.innerHTML = "<div class='alert alert-success' role='alert'><h3>" + item.name + "</h3><p>" + item.description + "</p></div>";
+			}
+		});
+
+		function openConfirmationModal () {
+			b.tag.confirmationWrapper({
+				title: "Are you sure you want to do this?",
+				message: "Are you sure you want to submit this super-dangerous operation?",
+				yes: "Oui",
+				no: "Nein",
+				onConfirmation: function () {
+					alert("Operation Confirmed");
+				},
+				onDismiss: function () {
+					alert("Modal Dismiss Event");
+				}
+			});
+		}
+	</script>
+</body>
+</html>
+

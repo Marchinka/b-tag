@@ -1,0 +1,50 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>X-Bootstrap Tests</title>
+  <link rel="stylesheet" href="./../node_modules/mocha/mocha.css" />
+  <script type="text/javascript" src="./../node_modules/webcomponents.js/webcomponents-lite.js"></script>
+</head>
+<body>
+  <div id="mocha"></div>
+  <script src="./../node_modules/mocha/mocha.js"></script>
+  <script src="./../node_modules/chai/chai.js"></script>
+  <script src="./../node_modules/chai-spies/chai-spies.js"></script>
+
+  <script>
+    mocha.setup('bdd')
+    mocha.reporter('html');
+    var expect = chai.expect;
+  </script>
+
+  <script type="text/javascript" src="./../node_modules/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./../node_modules/underscore/underscore.js"></script>
+  <script src="./../dist/b-tag.js"></script>
+
+  <script type="text/javascript">
+    b.tag.logger.disable = true;
+  </script>
+
+  <script type="text/javascript" src="./tests/baseTests.js"></script>
+
+  <script src="./helpers/testHelpers.js"></script>
+
+  <script src="./tests/input-select-tests.js"></script>
+  <script src="./tests/extending-tests.js"></script>
+  <script src="./tests/collection-elements-tests.js"></script>
+  <script src="./tests/collection-search-form-tests.js"></script>
+  <script src="./tests/form-ajax-tests.js"></script>
+  <script src="./tests/input-radio-group-tests.js"></script>
+  <script src="./tests/input-radio-tests.js"></script>
+  <script src="./tests/input-textarea-tests.js"></script>
+  <script src="./tests/input-checkbox-tests.js"></script>
+  <script src="./tests/input-text-tests.js"></script>
+
+  <script>
+    // Only tests run in real browser, injected script run if options.run == true
+    if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+      mocha.run();
+    }
+  </script>
+</body>
+</html>
